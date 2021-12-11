@@ -80,6 +80,18 @@ export default async function AuthRouter(fastify: FastifyInstance) {
       }
   );
 
+  fastify.get('/session', async (request, reply) => {
+    if (request.user) {
+      if (!request.user.verified || !request.user.verifiedAt) {
+        return sendReply(reply, 400, 'Verify your email and try again');
+      }
+
+      return sendReply(reply, 200, null, {user: request.user});
+    }
+
+    return sendReply(reply, 400, null, {user: null});
+  });
+
   fastify.post(
       '/login',
       {
