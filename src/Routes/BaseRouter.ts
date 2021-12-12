@@ -1,3 +1,5 @@
+import {User} from '../Models/User';
+import {File} from '../Models/File';
 import type {FastifyInstance} from 'fastify';
 
 /**
@@ -7,6 +9,18 @@ import type {FastifyInstance} from 'fastify';
 export default async function BaseRouter(fastify: FastifyInstance) {
   fastify.get('/', async () => {
     return {statusCode: 200, message: 'Hello World!'};
+  });
+
+  fastify.get('/stats', async () => {
+    const userCount = await User.estimatedDocumentCount();
+    const fileCount = await File.estimatedDocumentCount();
+
+    return {
+      userCount,
+      fileCount,
+      bannedCount: null,
+      domainCount: null,
+    };
   });
 }
 
