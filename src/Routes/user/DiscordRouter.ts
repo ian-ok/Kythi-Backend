@@ -72,7 +72,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
             id,
             username,
             tag: `${username}#${discriminator}`,
-            discriminator: parseInt(discriminator),
+            discriminator: discriminator,
             avatar: getAvatarURL(id, parseInt(discriminator), avatar),
             banner: banner ?
             `${discordCDN}banners/${id}/${banner}.${
@@ -167,7 +167,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
             id,
             username,
             tag: `${username}#${discriminator}`,
-            discriminator: parseInt(discriminator),
+            discriminator: discriminator,
             avatar: getAvatarURL(id, parseInt(discriminator), avatar),
             banner: banner ?
             `${discordCDN}banners/${id}/${banner}.${

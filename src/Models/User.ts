@@ -26,7 +26,7 @@ export interface User extends Document {
     id: string | null;
     username: string | null;
     tag: string | null;
-    discriminator: number | null;
+    discriminator: string | null;
     avatar: string | null;
     banner: string | null;
     bannerColor: string | null;
@@ -165,7 +165,7 @@ const UserSchema = new Schema({
       default: null,
     },
     discriminator: {
-      type: Number,
+      type: String,
       default: null,
     },
     avatar: {
