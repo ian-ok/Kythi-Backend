@@ -42,8 +42,8 @@ server.register(fastifyRateLimit, {
 server.register(fastifySecureSession, {
   key: Buffer.from(process.env.COOKIE_KEY, 'hex'),
   cookie: {
-    path: '/'
-  }
+    path: '/',
+  },
 });
 
 server.register(fastifyPassport.initialize());
