@@ -132,7 +132,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
               client_secret: process.env.DISCORD_CLIENT_SECRET,
               grant_type: 'authorization_code',
               code: request.query.code,
-              redirect_uri: `${process.env.HOST}discord/link/callback`,
+              redirect_uri: `${process.env.HOST}discord/login/callback`,
             }),
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
