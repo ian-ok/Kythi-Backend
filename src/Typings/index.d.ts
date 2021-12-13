@@ -14,6 +14,10 @@ declare global {
       MAIL_INFO: string;
       COOKIE_KEY: string;
       BOT_API_KEY: string;
+      FRONTEND_URL: string;
+      DISCORD_CLIENT_ID: string;
+      DISCORD_OAUTH_SCOPES: string;
+      DISCORD_CLIENT_SECRET: string;
       DOCKER_STARTUP_WEBHOOK_URL: string;
     }
   }

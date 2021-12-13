@@ -19,3 +19,13 @@ export const errorCodes = {
   504: 'Gateway Timeout',
   505: 'HTTP Version Not Supported',
 };
+
+export const OAuthURLS = {
+  'authorize': 'https://discord.com/api/v9/oauth2/authorize',
+  'token': 'https://discord.com/api/v9/oauth2/token',
+  'revoke': 'https://discord.com/api/v9/oauth2/token/revoke',
+};
+
+export const discordCDN = 'https://cdn.discordapp.com';
+
+export const identifyEndpoint = 'https://discord.com/api/v9/users/@me';
