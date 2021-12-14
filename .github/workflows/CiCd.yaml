@@ -3,7 +3,7 @@ name: CiCd
 on:
   push:
     branches:
-      - Backend
+      - main
 
 jobs:
   Build-and-Push-to-GHCR:
@@ -19,7 +19,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build and Push to GHCR
+      - name: Build and Push to GitHub Container Registry
         run: |
-          docker build . --tag ghcr.io/nekoyre/kythi-backend:latest
-          docker push ghcr.io/nekoyre/kythi-backend:latest
+          docker build . --tag ghcr.io/kythix/kythi-backend:latest
+          docker push ghcr.io/kythix/kythi-backend:latest
