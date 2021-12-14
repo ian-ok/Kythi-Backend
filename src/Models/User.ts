@@ -98,13 +98,13 @@ const UserSchema = new Schema({
           {
             color: 'RANDOM',
             title: ':filename:',
-            description: 'Image uploaded on Kythi.com at :date:',
+            description: 'kythi.com | :uploads:',
             author: {
               text: ':username:',
               url: '',
             },
             site: {
-              text: 'Kythi.com',
+              text: ':date: | :filesize:',
               url: 'https://kythi.com/',
             },
           },
