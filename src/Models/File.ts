@@ -49,40 +49,18 @@ const FileSchema = new Schema({
       required: true,
     },
   },
-  // ! This is incorrectly typed
   embed: {
     type: {
-      color: {
-        type: String,
-        required: true,
-      },
-      title: {
-        type: String,
-        required: true,
-      },
-      description: {
-        type: String,
-        required: true,
-      },
+      color: String,
+      title: String,
+      description: String,
       author: {
-        text: {
-          type: String,
-          required: true,
-        },
-        url: {
-          type: String,
-          required: true,
-        },
+        text: String,
+        url: String,
       },
       site: {
-        text: {
-          type: String,
-          required: true,
-        },
-        url: {
-          type: String,
-          required: true,
-        },
+        text: String,
+        url: String,
       },
     },
     required: true,

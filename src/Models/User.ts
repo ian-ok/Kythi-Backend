@@ -79,55 +79,33 @@ const UserSchema = new Schema({
     },
     settings: {
       embeds: {
-        // ! This is incorrectly typed
         type: [
           {
-            color: {
-              type: String,
-              required: true,
-            },
-            title: {
-              type: String,
-              required: true,
-            },
-            description: {
-              type: String,
-              required: true,
-            },
+            color: String,
+            title: String,
+            description: String,
             author: {
-              text: {
-                type: String,
-                required: true,
-              },
-              url: {
-                type: String,
-                required: true,
-              },
+              text: String,
+              url: String,
             },
             site: {
-              text: {
-                type: String,
-                required: true,
-              },
-              url: {
-                type: String,
-                required: true,
-              },
+              text: String,
+              url: String,
             },
           },
         ],
         default: [
           {
             color: 'RANDOM',
-            title: 'This is a title',
-            description: 'This is a description',
+            title: ':filename:',
+            description: 'Image uploaded on Kythi.com at :date:',
             author: {
-              text: 'This is the author',
-              url: 'https://google.com',
+              text: ':username:',
+              url: '',
             },
             site: {
-              text: 'This is the site',
-              url: 'https://google.com',
+              text: 'Kythi.com',
+              url: 'https://kythi.com/',
             },
           },
         ],
