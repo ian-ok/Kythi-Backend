@@ -3,7 +3,7 @@ name: Run-ESLint
 on:
   push:
     branches:
-      - Backend
+      - main
 
 jobs:
   Run-ESLint:
