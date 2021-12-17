@@ -9,4 +9,6 @@ RUN ["yarn", "install"]
 
 COPY . .
 
-CMD ["yarn", "docker"]
+RUN ["yarn", "build"]
+
+CMD ["yarn", "start"]

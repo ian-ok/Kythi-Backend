@@ -11,8 +11,7 @@
     "build": "rimraf dist && tsc",
     "start": "node .",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "docker": "yarn build && yarn start"
+    "lint:fix": "eslint . --ext .ts --fix"
   },
   "dependencies": {
     "argon2": "^0.28.3",
