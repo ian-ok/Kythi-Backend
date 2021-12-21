@@ -15,6 +15,7 @@ interface registerBody {
   email: string;
   password: string;
   inviteCode: string;
+  hCaptchaKey: string;
 }
 
 /**
@@ -35,6 +36,7 @@ export default async function AuthRouter(fastify: FastifyInstance) {
             email: Joi.string().required().email().lowercase(),
             password: Joi.string().min(10).max(100).required(),
             inviteCode: Joi.string().required(),
+            hCaptchaKey: Joi.string().required(),
           }),
         },
       },
