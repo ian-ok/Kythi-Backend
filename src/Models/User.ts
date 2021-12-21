@@ -98,7 +98,7 @@ const UserSchema = new Schema({
           {
             color: 'RANDOM',
             title: ':filename:',
-            description: 'kythi.com | :uploadcount:',
+            description: 'kythi.com | Upload :uploadcount:',
             author: {
               text: ':username:',
               url: '',
