@@ -53,7 +53,7 @@ server.register(fastifyPassport.secureSession());
 fastifyPassport.use(
     new Strategy((username, password, done) => {
       User.findOne(
-          {$or: [{username}, {email: username}]},
+          {$or: [{username: new RegExp(`^${username}$`, 'i')}, {email: new RegExp(`^${username}$`, 'i')}]},
           async (err: Error, user: User) => {
             if (err) {
               return done(err);
