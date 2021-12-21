@@ -19,7 +19,7 @@ const server = fastify({
 });
 
 server.setValidatorCompiler(({schema}) => {
-  return (data) => schema.validate ? schema.validate(data) : null;
+  return (data) => schema.validate(data);
 });
 
 server.setNotFoundHandler((_, reply) => {

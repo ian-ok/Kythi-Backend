@@ -1,3 +1,4 @@
+import {ObjectSchema} from 'joi';
 import {User} from '../Models/User';
 import {File} from 'fastify-multer/lib/interfaces';
 
@@ -39,11 +40,10 @@ declare global {
 
 declare module 'fastify' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface PassportUser extends User {}
-  interface FastifySchema extends FastifySchema {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- This is undocumented
-    validate?: (any) => any;
-  }
+  interface PassportUser extends User, PassportUser {}
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  interface FastifySchema extends ObjectSchema<any>, FastifySchema {}
 
   interface FastifyRequest extends FastifyRequest {
     user?: User;
