@@ -132,6 +132,15 @@ export default async function AuthRouter(fastify: FastifyInstance) {
         return sendReply(reply, 200, 'Successfully logged in', {user});
       }
   );
+
+  fastify.post('/logOut', async (request, reply) => {
+    if (!request.user) {
+      return sendReply(reply, 400, 'You are not logged in');
+    }
+
+    await request.logOut();
+    return sendReply(reply, 200, 'Successfully logged out');
+  });
 }
 
 export const autoPrefix = '/auth';
