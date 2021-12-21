@@ -2,13 +2,14 @@ import Joi from 'joi';
 import {v5} from 'uuid';
 import {hash} from 'argon2';
 import {User} from '../../Models/User';
-import {sendReply} from '../../Utility';
 import passport from 'fastify-passport';
 import {Invite} from '../../Models/Invite';
 import type {FastifyInstance} from 'fastify';
+import {request as axiosReq} from '../../Utility';
 import {sendVerifyMail} from '../../Utility/Mail';
 import {generateRandomString} from '../../Utility';
 import {allowedMails} from '../../Utility/Constants';
+import {paramBuilder, sendReply} from '../../Utility';
 
 interface registerBody {
   username: string;
@@ -45,8 +46,24 @@ export default async function AuthRouter(fastify: FastifyInstance) {
         const inviteUsed: Invite = await Invite.findById(inviteCode);
         const inviter: User = await User.findById(inviteUsed?.createdBy);
 
+        // this *shouldnt* error
+        const captchaData = await axiosReq('https://hcaptcha.com/siteverify', 'POST', {
+          body: paramBuilder({
+            secret: process.env.HCAPTCHA_SECRET as string,
+            response: request.body.hCaptchaKey,
+            sitekey: process.env.HCAPTCHA_SITEKEY as string,
+          }),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        });
+
+        if (!captchaData.success) {
+          return sendReply(reply, 400, 'Invalid Captcha');
+        }
+
         if (!inviteUsed || !inviter) {
-          return sendReply(reply, 400, 'Invalid invite code');
+          return sendReply(reply, 400, 'Invalid Invite code');
         }
 
         if (!allowedMails.includes(email.split('@')[1])) {

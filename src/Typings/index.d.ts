@@ -15,6 +15,8 @@ declare global {
       COOKIE_KEY: string;
       BOT_API_KEY: string;
       FRONTEND_URL: string;
+      HCAPTCHA_SECRET: string;
+      HCAPTCHA_SITEKEY: string;
       DISCORD_CLIENT_ID: string;
       DISCORD_OAUTH_SCOPES: string;
       DISCORD_CLIENT_SECRET: string;
