@@ -129,12 +129,10 @@ const UserSchema = new Schema({
   discord: {
     id: {
       type: String,
-      unique: true,
       default: null,
     },
     username: {
       type: String,
-      unique: true,
       default: null,
     },
     tag: {
