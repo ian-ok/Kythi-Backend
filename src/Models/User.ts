@@ -42,6 +42,7 @@ const UserSchema = new Schema({
   username: {
     type: String,
     required: true,
+    unique: true,
   },
   email: {
     type: String,
@@ -75,6 +76,7 @@ const UserSchema = new Schema({
     },
     key: {
       type: String,
+      unique: true,
       default: generateRandomString(16),
     },
     settings: {
@@ -137,7 +139,6 @@ const UserSchema = new Schema({
     },
     tag: {
       type: String,
-      unique: true,
       default: null,
     },
     discriminator: {
@@ -146,12 +147,10 @@ const UserSchema = new Schema({
     },
     avatar: {
       type: String,
-      unique: true,
       default: null,
     },
     banner: {
       type: String,
-      unique: true,
       default: null,
     },
     bannerColor: {
