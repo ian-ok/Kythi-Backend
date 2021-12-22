@@ -43,7 +43,6 @@ server.register(fastifySecureSession, {
   key: Buffer.from(process.env.COOKIE_KEY, 'hex'),
   cookie: {
     path: '/',
-    expires: new Date(Date.now() + 60 * 60 * 1000),
   },
 });
 
