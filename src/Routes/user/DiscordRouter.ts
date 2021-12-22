@@ -75,7 +75,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
             discriminator: discriminator,
             avatar: getAvatarURL(id, parseInt(discriminator), avatar),
             banner: banner ?
-            `${discordCDN}banners/${id}/${banner}.${
+            `${discordCDN}/banners/${id}/${banner}.${
                 banner.startsWith('a_') ? 'gif' : 'png'
             }` :
             null,
