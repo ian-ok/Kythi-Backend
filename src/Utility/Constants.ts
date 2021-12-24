@@ -3,7 +3,6 @@ export const allowedMails = [
   'yahoo.com',
   'hotmail.com',
   'outlook.com',
-  'null.net',
   'icloud.com',
 ];
 
