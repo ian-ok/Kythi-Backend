@@ -31,7 +31,7 @@ server.setNotFoundHandler((_, reply) => {
 server.register(fastifyHelmet);
 server.register(fastifyMulter.contentParser);
 server.register(fastifyCors, {
-  origin: [/^http:\/\/localhost:\d{0,4}$/, 'https://kythi.com'],
+  origin: [/^http:\/\/localhost:\d{0,4}$/, 'https://chakra.kythi.com', 'https://kythi.com'],
   credentials: true,
 });
 server.register(fastifyRateLimit, {
