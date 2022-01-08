@@ -8,6 +8,7 @@
     "google"
   ],
   "rules": {
+    "require-jsdoc": "off",
     "max-len": [
       "error",
       {
