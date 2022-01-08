@@ -11,7 +11,8 @@
     "build": "rimraf dist && tsc",
     "start": "node .",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "dev": "nodemon -e .ts --exec \"clear && yarn run build && yarn run start || exit 1\""
   },
   "dependencies": {
     "dotenv": "^10.0.0",
@@ -24,6 +25,7 @@
     "@typescript-eslint/parser": "^5.9.0",
     "eslint": "^8.6.0",
     "eslint-config-google": "^0.14.0",
+    "nodemon": "^2.0.15",
     "rimraf": "^3.0.2",
     "typescript": "^4.5.4"
   }
