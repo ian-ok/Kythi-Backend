@@ -1,10 +1,12 @@
 import 'dotenv/config';
+import {join} from 'path';
 import fastify from 'fastify';
+import fastifyAutoload from 'fastify-autoload';
 
 const server = fastify();
 
-server.get('/', async () => {
-  return {statusCode: 200, message: 'Hello World!'};
+server.register(fastifyAutoload, {
+  dir: join(__dirname, 'Routes'),
 });
 
 server.listen(process.env.PORT, '0.0.0.0', (err) => {
