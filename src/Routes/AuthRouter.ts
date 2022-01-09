@@ -103,6 +103,14 @@ export default async function AuthRouter(fastify: FastifyInstance) {
       }
   );
 
+  fastify.get('/session', async (request, reply) => {
+    if (!request.user) {
+      reply.code(400).send({statusCode: 400, message: 'No session found.', user: null});
+    }
+
+    return {statusCode: 200, message: 'Session located.', user: request.user};
+  });
+
   fastify.post('/login', {
     schema: {
       body: Joi.object().keys({
@@ -123,9 +131,10 @@ export default async function AuthRouter(fastify: FastifyInstance) {
     const user = request.user as User;
 
     if (!user.verifiedAt) {
+      await request.logOut();
       return reply.code(400).send({
         statusCode: 400,
-        message: 'Please verify your email first.',
+        message: 'Verify your email first and try again.',
       });
     }
 
