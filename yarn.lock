@@ -853,10 +853,40 @@ fastify-autoload@^3.10.0:
     pkg-up "^3.1.0"
     semver "^7.3.2"
 
+fastify-cors@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/fastify-cors/-/fastify-cors-6.0.2.tgz#4fd5102549659e9b34d252fd7ee607b63d021390"
+  integrity sha512-sE0AOyzmj5hLLRRVgenjA6G2iOGX35/1S3QGYB9rr9TXelMZB3lFrXy4CzwYVOMiujJeMiLgO4J7eRm8sQSv8Q==
+  dependencies:
+    fastify-plugin "^3.0.0"
+    vary "^1.1.2"
+
 fastify-error@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/fastify-error/-/fastify-error-0.3.1.tgz#8eb993e15e3cf57f0357fc452af9290f1c1278d2"
   integrity sha512-oCfpcsDndgnDVgiI7bwFKAun2dO+4h84vBlkWsWnz/OUK9Reff5UFoFl241xTiLeHWX/vU9zkDVXqYUxjOwHcQ==
+
+fastify-helmet@^5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/fastify-helmet/-/fastify-helmet-5.3.2.tgz#eda259b8a9ad5ccc6dacc1b7ed358c03f59a7f7f"
+  integrity sha512-X9lKZa7wjvMe79eUP0Fo+3GMMmbxKC92ddJGdmSIEZxn0JwSw+Fw5mlOiM9RABRQGphdLDSHIL/29ywH7GUusQ==
+  dependencies:
+    fastify-plugin "^3.0.0"
+    helmet "^4.0.0"
+
+fastify-plugin@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.0.tgz#cf1b8c8098e3b5a7c8c30e6aeb06903370c054ca"
+  integrity sha512-ZdCvKEEd92DNLps5n0v231Bha8bkz1DjnPP/aEz37rz/q42Z5JVLmgnqR4DYuNn3NXAO3IDCPyRvgvxtJ4Ym4w==
+
+fastify-rate-limit@^5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.7.0.tgz#50a4ec3183e7b357c629e99d10260f65a0950bb3"
+  integrity sha512-9pfnVpz6rUy7VGqBVN9blIT7LgmETiK7hRA0Pu8eHJFq8qq8FBPvrQYXxGXb2nt63laD6ZuvT1O7TxucZI1HIA==
+  dependencies:
+    fastify-plugin "^3.0.0"
+    ms "^2.1.1"
+    tiny-lru "^7.0.0"
 
 fastify-warning@^0.2.0:
   version "0.2.0"
@@ -1106,6 +1136,11 @@ has-yarn@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/has-yarn/-/has-yarn-2.1.0.tgz#137e11354a7b5bf11aa5cb649cf0c6f3ff2b2e77"
   integrity sha512-UqBRqi4ju7T+TqGNdqAO0PaSVGsDGJUBQvk9eUWNGRY1CFGDzYhLWoM7JQEemnlvVcv/YEmc2wNW8BC24EnUsw==
+
+helmet@^4.0.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-4.6.0.tgz#579971196ba93c5978eb019e4e8ec0e50076b4df"
+  integrity sha512-HVqALKZlR95ROkrnesdhbbZJFi/rIVSoNq6f3jA/9u6MIbTsPh3xZwihjeI5+DO/2sOV6HMHooXcEOuwskHpTg==
 
 http-cache-semantics@^4.0.0:
   version "4.1.0"
@@ -2146,6 +2181,11 @@ v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
+
+vary@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
+  integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
