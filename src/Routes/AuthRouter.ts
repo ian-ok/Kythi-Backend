@@ -99,7 +99,7 @@ export default async function AuthRouter(fastify: FastifyInstance) {
         });
         verifyMail(newUser);
 
-        reply.code(200).send({statusCode: 200, message: 'Successfully registered.'});
+        reply.code(200).send({statusCode: 200, message: 'Successfully registered! Check your email for verification.'});
       }
   );
 

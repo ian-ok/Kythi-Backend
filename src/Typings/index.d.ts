@@ -8,6 +8,7 @@ declare global {
       HOST: string;
       MAIL_INFO: string;
       SESSION_KEY: string;
+      DATABASE_URL: string;
     }
   }
 
