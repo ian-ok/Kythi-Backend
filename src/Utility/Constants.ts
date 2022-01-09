@@ -197,3 +197,12 @@ export const allowedEmails = [
   'musician.org',
   'teachers.org',
 ];
+
+export const discordApiUrl = 'https://discordapp.com/api/v9';
+export const discordCdnUrl = 'https://cdn.discordapp.com';
+
+export const OAuthURLS = {
+  'authorize': `${discordApiUrl}/oauth2/authorize`,
+  'token': `${discordApiUrl}/oauth2/token`,
+  'revoke': `${discordApiUrl}/oauth2/token/revoke`,
+};

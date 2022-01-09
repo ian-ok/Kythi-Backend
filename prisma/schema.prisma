@@ -8,17 +8,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @unique @default(uuid())
-  uid       Int      @unique @default(autoincrement())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  verifiedAt DateTime?
-  verificationCode String? @unique @default(cuid())
-  invited   String[] 
-  invitedBy String
-  invites   Invite[]
+  id               String    @id @unique @default(uuid())
+  uid              Int       @unique @default(autoincrement())
+  username         String    @unique
+  email            String    @unique
+  password         String
+  createdAt        DateTime  @default(now())
+  verifiedAt       DateTime?
+  verificationCode String?   @unique @default(cuid())
+  invited          String[]
+  invitedBy        String
+  invites          Invite[]
+  discordId        String?   @unique
+  discord          Discord?  @relation(fields: [discordId], references: [id])
 }
 
 model Invite {
@@ -26,4 +28,22 @@ model Invite {
   createdBy String
   createdAt DateTime @default(now())
   user      User     @relation(fields: [createdBy], references: [id])
+}
+
+model Discord {
+  id            String    @id @unique
+  username      String
+  discriminator String
+  tag           String    @unique
+  avatar        String
+  banner        String?
+  bannerColor   String?
+  nitroType     nitroType
+  user          User?
+}
+
+enum nitroType {
+  NONE
+  CLASSIC
+  PREMIUM
 }
