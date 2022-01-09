@@ -5,7 +5,30 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       PORT: string;
+      HOST: string;
+      MAIL_INFO: string;
     }
+  }
+
+  interface User {
+    id: string;
+    uid: Number
+    username: string
+    email:string
+    password: string
+    createdAt: Date
+    invited: string[]
+    invitedBy: string
+    invites?: Invite[]
+    verifiedAt: Date | null
+    verificationCode: string | null
+  }
+
+  interface Invite {
+    code: string
+    createdBy: string
+    createdAt: Date
+    user: User
   }
 }
 

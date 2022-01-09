@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import {hash} from 'argon2';
+import {verifyMail} from '../Utility/Mail';
 import type {FastifyInstance} from 'fastify';
 import {allowedEmails} from '../Utility/Constants';
 
@@ -95,6 +96,7 @@ export default async function AuthRouter(fastify: FastifyInstance) {
         await prisma.invite.delete({
           where: {code: inviteUsed.code},
         });
+        verifyMail(newUser);
 
         reply.code(200).send({statusCode: 200, message: 'Successfully registered.'});
       }
