@@ -1,11 +1,15 @@
 import 'dotenv/config';
 import {join} from 'path';
 import fastify from 'fastify';
+import {verify} from 'argon2';
 import fastifyCors from 'fastify-cors';
+import {Strategy} from 'passport-local';
 import fastifyHelmet from 'fastify-helmet';
 import {PrismaClient} from '@prisma/client';
 import fastifyAutoload from 'fastify-autoload';
+import fastifyPassport from 'fastify-passport';
 import fastifyRateLimit from 'fastify-rate-limit';
+import fastifySecureSession from 'fastify-secure-session';
 
 const server = fastify({
   trustProxy: true,
@@ -23,6 +27,47 @@ server.register(fastifyRateLimit, {
   timeWindow: 1000 * 60,
   max: 20,
 });
+
+server.register(fastifySecureSession, {
+  key: Buffer.from(process.env.SESSION_KEY, 'hex'),
+  cookie: {
+    path: '/',
+  },
+});
+
+server.register(fastifyPassport.initialize());
+server.register(fastifyPassport.secureSession());
+
+fastifyPassport.use(new Strategy(async (username, password, done) => {
+  const user = await server.prisma.user.findFirst({
+    where: {
+      OR: [
+        {
+          username: {
+            equals: username,
+            mode: 'insensitive',
+          },
+        },
+        {
+          email: {
+            equals: username,
+            mode: 'insensitive',
+          },
+        },
+      ],
+    },
+  });
+
+  if (!user || (await verify(user.password, password)) === false) {
+    return done(null, false);
+  }
+
+  return done(null, user);
+}));
+fastifyPassport.registerUserSerializer(async (user: User) => user.id);
+fastifyPassport.registerUserDeserializer(
+    async (id: string) => await server.prisma.user.findFirst({where: {id}})
+);
 
 server.register(fastifyAutoload, {
   dir: join(__dirname, 'Routes'),

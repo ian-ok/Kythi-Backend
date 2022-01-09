@@ -2,6 +2,7 @@ import Joi from 'joi';
 import {hash} from 'argon2';
 import {verifyMail} from '../Utility/Mail';
 import type {FastifyInstance} from 'fastify';
+import fastifyPassport from 'fastify-passport';
 import {allowedEmails} from '../Utility/Constants';
 
 interface registerBody {
@@ -101,6 +102,35 @@ export default async function AuthRouter(fastify: FastifyInstance) {
         reply.code(200).send({statusCode: 200, message: 'Successfully registered.'});
       }
   );
+
+  fastify.post('/login', {
+    schema: {
+      body: Joi.object().keys({
+        username: Joi.string().required(),
+        password: Joi.string().required(),
+      }),
+    },
+    preHandler: fastifyPassport.authenticate('local', async function(request, reply, _, user) {
+      if (!user) {
+        return reply
+            .code(400)
+            .send({statusCode: 400, message: 'Invalid username or password.'});
+      }
+
+      request.user = user as User;
+    }),
+  }, async (request, reply) => {
+    const user = request.user as User;
+
+    if (!user.verifiedAt) {
+      return reply.code(400).send({
+        statusCode: 400,
+        message: 'Please verify your email first.',
+      });
+    }
+
+    return {statusCode: 200, message: 'Successfully logged in', user};
+  });
 }
 
 export const autoPrefix = '/auth';

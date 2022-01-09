@@ -7,6 +7,7 @@ declare global {
       PORT: string;
       HOST: string;
       MAIL_INFO: string;
+      SESSION_KEY: string;
     }
   }
 
@@ -36,6 +37,8 @@ declare module 'fastify' {
   interface FastifyInstance {
     prisma: PrismaClient;
   }
+
+  interface PassportUser extends User {}
 
   interface FastifySchema extends FastifySchema {
     validate?: (...any) => ValidationResult<any>;
