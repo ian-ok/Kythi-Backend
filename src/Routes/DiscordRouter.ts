@@ -1,12 +1,16 @@
 import {AxiosError} from 'axios';
 import {getColor} from 'colorthief';
+import {randomBytes} from 'node:crypto';
 import type {FastifyInstance} from 'fastify';
 import {OAuthURLS} from '../Utility/Constants';
 import {getAvatarURL, rgbToHex} from '../Utility/Misc';
 import {req, encodeURL, paramBuilder} from '../Utility/Requests';
 
+
+const states = new Set<string>();
 interface linkCallbackQuery {
   code: string;
+  state: string;
 }
 
 export default async function DiscordRouter(fastify: FastifyInstance) {
@@ -17,6 +21,10 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
       return reply.redirect(process.env.FRONTEND_URL);
     }
 
+    const state = randomBytes(16).toString('base64');
+    states.add(state);
+    setTimeout(() => states.delete(state), 1000 * 60);
+
     return reply.redirect(
         encodeURL(OAuthURLS['authorize'], {
           scope: JSON.parse(process.env.DISCORD_OAUTH_SCOPES),
@@ -24,6 +32,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
           client_id: process.env.DISCORD_CLIENT_ID,
           redirect_uri: `${process.env.HOST}/discord/link/callback`,
           response_type: 'code',
+          state: encodeURIComponent(state),
         })
     );
   });
@@ -32,15 +41,19 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
       '/link/callback',
       async (request, reply) => {
         const {
-        //   user,
-          query: {code},
+          user,
+          query: {code, state},
         } = request;
 
-        const user = await prisma.user.findFirst({where: {id: '520b0d2a-0e28-4a89-b1dc-179ae489ab36'}});
-
         if (!user || user.discordId || !code) {
-          console.log('a');
           return reply.redirect(process.env.FRONTEND_URL);
+        }
+
+        if (
+          !state ||
+          !states.has(decodeURIComponent(state))
+        ) {
+          return reply.redirect(`${process.env.HOST}/discord/link`);
         }
 
         try {
@@ -103,10 +116,12 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
           });
           /* eslint-enable camelcase */
 
+          states.delete(state);
           return reply.redirect(process.env.FRONTEND_URL);
         } catch (err) {
           const errorData = typeof (err as AxiosError).response !== 'undefined' ? (err as AxiosError).response?.data : (err as Error).message;
 
+          states.delete(state);
           return reply.code(400).send({statusCode: 400, message: 'An unexpected error has occurred. Your discord account was not linked.', error: errorData});
         }
       }
