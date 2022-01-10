@@ -3,7 +3,7 @@ name: Run-ESLint
 on:
   push:
     branches:
-      - postgresql
+      - main
 
 jobs:
   Run-ESLint:
