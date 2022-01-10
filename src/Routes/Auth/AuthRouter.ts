@@ -1,9 +1,9 @@
 import Joi from 'joi';
 import {hash} from 'argon2';
-import {verifyMail} from '../Utility/Mail';
+import {verifyMail} from '../../Utility/Mail';
 import type {FastifyInstance} from 'fastify';
 import fastifyPassport from 'fastify-passport';
-import {allowedEmails} from '../Utility/Constants';
+import {allowedEmails} from '../../Utility/Constants';
 
 interface registerBody {
   username: string;

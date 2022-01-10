@@ -2,13 +2,12 @@ import {AxiosError} from 'axios';
 import {getColor} from 'colorthief';
 import {randomBytes} from 'node:crypto';
 import type {FastifyInstance} from 'fastify';
-import {OAuthURLS} from '../Utility/Constants';
-import {getAvatarURL, rgbToHex} from '../Utility/Misc';
-import {req, encodeURL, paramBuilder} from '../Utility/Requests';
-
+import {OAuthURLS} from '../../Utility/Constants';
+import {getAvatarURL, rgbToHex} from '../../Utility/Misc';
+import {req, encodeURL, paramBuilder} from '../../Utility/Requests';
 
 const states = new Set<string>();
-interface linkCallbackQuery {
+interface loginCallbackQuery {
   code: string;
   state: string;
 }
@@ -16,9 +15,9 @@ interface linkCallbackQuery {
 export default async function DiscordRouter(fastify: FastifyInstance) {
   const {prisma} = fastify;
 
-  fastify.get('/link', async (request, reply) => {
-    if (!request.user || request.user.discordId) {
-      return reply.redirect(process.env.FRONTEND_URL);
+  fastify.get('/login', async (request, reply) => {
+    if (request.user) {
+      return reply.redirect(`${process.env.FRONTEND_URL}/dashboard`);
     }
 
     const state = randomBytes(16).toString('base64');
@@ -30,30 +29,27 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
           scope: JSON.parse(process.env.DISCORD_OAUTH_SCOPES),
           prompt: 'consent',
           client_id: process.env.DISCORD_CLIENT_ID,
-          redirect_uri: `${process.env.HOST}/discord/link/callback`,
+          redirect_uri: `${process.env.HOST}/discord/login/callback`,
           response_type: 'code',
           state: encodeURIComponent(state),
         })
     );
   });
 
-  fastify.get<{ Querystring: linkCallbackQuery }>(
-      '/link/callback',
+  fastify.get<{ Querystring: loginCallbackQuery }>(
+      '/login/callback',
       async (request, reply) => {
         const {
           user,
           query: {code, state},
         } = request;
 
-        if (!user || user.discordId || !code) {
-          return reply.redirect(process.env.FRONTEND_URL);
+        if (user) {
+          return reply.redirect(`${process.env.FRONTEND_URL}/dashboard`);
         }
 
-        if (
-          !state ||
-          !states.has(decodeURIComponent(state))
-        ) {
-          return reply.redirect(`${process.env.HOST}/discord/link`);
+        if (!code || !state || !states.has(decodeURIComponent(state))) {
+          return reply.redirect(`${process.env.HOST}/discord/login`);
         }
 
         states.delete(state);
@@ -65,7 +61,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
               client_secret: process.env.DISCORD_CLIENT_SECRET,
               grant_type: 'authorization_code',
               code,
-              redirect_uri: `${process.env.HOST}/discord/link/callback`,
+              redirect_uri: `${process.env.HOST}/discord/login/callback`,
             }),
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
@@ -82,6 +78,14 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
               }
           );
 
+          const kythiUser = await prisma.user.findFirst({
+            where: {discordId: userData.id},
+          });
+
+          if (!kythiUser) {
+            return reply.code(400).redirect(`${process.env.FRONTEND_URL}`);
+          }
+
           /* eslint-disable camelcase */
           const {
             id,
@@ -93,9 +97,9 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
             premium_type,
           } = userData;
 
-          await prisma.discord.create({
+          await prisma.discord.update({
+            where: {id},
             data: {
-              id,
               username,
               discriminator,
               tag: `${username}#${discriminator}`,
@@ -109,23 +113,35 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
                     ))
                 ) :
                 banner_color,
-              nitroType: premium_type === 0 ? 'NONE' : premium_type === 1 ? 'CLASSIC' : 'PREMIUM',
+              nitroType:
+              premium_type === 0 ?
+                'NONE' :
+                premium_type === 1 ?
+                'CLASSIC' :
+                'PREMIUM',
             },
-          });
-          await prisma.user.update({
-            where: {id: user.id},
-            data: {discordId: id},
           });
           /* eslint-enable camelcase */
 
-          return reply.redirect(process.env.FRONTEND_URL);
+          await request.logIn(
+              await prisma.user.findFirst({where: {id: kythiUser.id}})
+          );
+          return reply.redirect(`${process.env.FRONTEND_URL}/dashboard`);
         } catch (err) {
-          const errorData = typeof (err as AxiosError).response !== 'undefined' ? (err as AxiosError).response?.data : (err as Error).message;
+          const errorData =
+          typeof (err as AxiosError).response !== 'undefined' ?
+            (err as AxiosError).response?.data :
+            (err as Error).message;
 
-          return reply.code(400).send({statusCode: 400, message: 'An unexpected error has occurred. Your discord account was not linked.', error: errorData});
+          return reply.code(400).send({
+            statusCode: 400,
+            message:
+            'An unexpected error has occurred. Your discord account was not linked.',
+            error: errorData,
+          });
         }
       }
   );
 }
 
-export const autoPrefix = '/discord';
+export const autoPrefix = '/auth/discord';
