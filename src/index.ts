@@ -68,7 +68,11 @@ fastifyPassport.use(new Strategy(async (username, password, done) => {
 }));
 fastifyPassport.registerUserSerializer(async (user: User) => user.id);
 fastifyPassport.registerUserDeserializer(
-    async (id: string) => await server.prisma.user.findFirst({where: {id}})
+    async (id: string) =>
+      await server.prisma.user.findFirst({
+        where: {id},
+        include: {discord: true, upload: true},
+      })
 );
 
 server.register(fastifyAutoload, {
