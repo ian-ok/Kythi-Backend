@@ -29,7 +29,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
           scope: JSON.parse(process.env.DISCORD_OAUTH_SCOPES),
           prompt: 'consent',
           client_id: process.env.DISCORD_CLIENT_ID,
-          redirect_uri: `${process.env.HOST}/discord/login/callback`,
+          redirect_uri: `${process.env.HOST}/auth/discord/login/callback`,
           response_type: 'code',
           state: encodeURIComponent(state),
         })
@@ -61,7 +61,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
               client_secret: process.env.DISCORD_CLIENT_SECRET,
               grant_type: 'authorization_code',
               code,
-              redirect_uri: `${process.env.HOST}/discord/login/callback`,
+              redirect_uri: `${process.env.HOST}/auth/discord/login/callback`,
             }),
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
