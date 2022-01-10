@@ -6,6 +6,7 @@ import fastifyCors from 'fastify-cors';
 import {Strategy} from 'passport-local';
 import fastifyHelmet from 'fastify-helmet';
 import {PrismaClient} from '@prisma/client';
+import fastifyMulter from 'fastify-multer';
 import fastifyAutoload from 'fastify-autoload';
 import fastifyPassport from 'fastify-passport';
 import fastifyRateLimit from 'fastify-rate-limit';
@@ -35,6 +36,7 @@ server.register(fastifySecureSession, {
   },
 });
 
+server.register(fastifyMulter.contentParser);
 server.register(fastifyPassport.initialize());
 server.register(fastifyPassport.secureSession());
 

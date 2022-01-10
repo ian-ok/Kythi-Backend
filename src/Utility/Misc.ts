@@ -18,3 +18,14 @@ export const rgbToHex = (r: number, g: number, b: number) =>
         return hex.length === 1 ? '0' + hex : hex;
       })
       .join('');
+
+
+export const generateRandomString = (length: number) => {
+  const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = length; i > 0; --i) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return result;
+};

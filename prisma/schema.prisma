@@ -8,26 +8,28 @@ datasource db {
 }
 
 model User {
-  id               String    @id @unique @default(uuid())
-  uid              Int       @unique @default(autoincrement())
-  username         String    @unique
-  email            String    @unique
+  id               String          @id @unique @default(uuid())
+  uid              Int             @unique @default(autoincrement())
+  username         String          @unique
+  email            String          @unique
   password         String
-  createdAt        DateTime  @default(now())
+  createdAt        DateTime        @default(now())
   verifiedAt       DateTime?
-  verificationCode String?   @unique @default(cuid())
+  verificationCode String?         @unique @default(cuid())
   invited          String[]
   invitedBy        String
   invites          Invite[]
-  discordId        String?   @unique
-  discord          Discord?  @relation(fields: [discordId], references: [id])
+  discordId        String?         @unique
+  discord          Discord?        @relation(fields: [discordId], references: [id])
+  uploadKey        String?         @unique
+  upload           UploadSettings? @relation(fields: [uploadKey], references: [key])
+  uploads          File[]
 }
 
-model Invite {
-  code      String   @id @unique @default(uuid())
-  createdBy String
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [createdBy], references: [id])
+model UploadSettings {
+  key   String @id @unique @default(cuid())
+  count Int    @default(0)
+  User  User?
 }
 
 model Discord {
@@ -46,4 +48,23 @@ enum nitroType {
   NONE
   CLASSIC
   PREMIUM
+}
+
+model Invite {
+  code      String   @id @unique @default(uuid())
+  createdBy String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [createdBy], references: [id])
+}
+
+model File {
+  fileName String 
+  cdnName String @id @unique
+  mimeType String
+  size Int
+  path String
+  domain String
+  uploadedAt DateTime @default(now())
+  uploaderId String
+  uploader User  @relation(fields: [uploaderId], references: [id])
 }
