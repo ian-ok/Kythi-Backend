@@ -3,7 +3,7 @@ name: Run-ESLint
 on:
   push:
     branches:
-      - main
+      - mongo
 
 jobs:
   Run-ESLint:
