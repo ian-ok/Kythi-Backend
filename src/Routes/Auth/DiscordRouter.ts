@@ -27,7 +27,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
     return reply.redirect(
         encodeURL(OAuthURLS['authorize'], {
           scope: JSON.parse(process.env.DISCORD_OAUTH_SCOPES),
-          prompt: 'consent',
+          prompt: 'none',
           client_id: process.env.DISCORD_CLIENT_ID,
           redirect_uri: `${process.env.HOST}/auth/discord/login/callback`,
           response_type: 'code',
@@ -49,7 +49,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
         }
 
         if (!code || !state || !states.has(decodeURIComponent(state))) {
-          return reply.redirect(`${process.env.HOST}/discord/login`);
+          return reply.redirect(`${process.env.HOST}/auth/discord/login`);
         }
 
         states.delete(state);
@@ -83,7 +83,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
           });
 
           if (!kythiUser) {
-            return reply.code(400).redirect(`${process.env.FRONTEND_URL}`);
+            return reply.redirect(`${process.env.FRONTEND_URL}`);
           }
 
           /* eslint-disable camelcase */
