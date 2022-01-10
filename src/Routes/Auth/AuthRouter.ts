@@ -111,6 +111,13 @@ export default async function AuthRouter(fastify: FastifyInstance) {
     return {statusCode: 200, message: 'Session located.', user: request.user};
   });
 
+  fastify.post('/logOut', async (request, reply) => {
+    if (!request.user) return reply.code(400).send({statusCode: 400, message: 'No session found.'});
+
+    request.logOut();
+    reply.code(200).send({statusCode: 200, message: 'Successfully logged out.'});
+  });
+
   fastify.post('/login', {
     schema: {
       body: Joi.object().keys({
