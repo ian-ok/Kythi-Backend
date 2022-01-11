@@ -3,7 +3,7 @@ import {getColor} from 'colorthief';
 import {randomBytes} from 'node:crypto';
 import type {FastifyInstance} from 'fastify';
 import {OAuthURLS} from '../Utility/Constants';
-import {getAvatarURL, rgbToHex} from '../Utility/Misc';
+import {getDiscordImage, rgbToHex} from '../Utility/Misc';
 import {req, encodeURL, paramBuilder} from '../Utility/Requests';
 
 
@@ -90,8 +90,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
             discriminator,
             banner,
             banner_color,
-            premium_type,
-          } = userData;
+          } = userData as { [key: string]: string };
 
           await prisma.discord.create({
             data: {
@@ -99,17 +98,34 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
               username,
               discriminator,
               tag: `${username}#${discriminator}`,
-              avatar: getAvatarURL(id, parseInt(discriminator), avatar),
-              banner,
+              avatar: getDiscordImage({
+                id,
+                hash: avatar,
+                discriminator: parseInt(discriminator),
+              }),
+              banner: getDiscordImage({
+                id,
+                hash: banner,
+                isBanner: true,
+              }),
               bannerColor:
               !banner && !banner_color ?
                 rgbToHex(
                     ...(await getColor(
-                        getAvatarURL(id, parseInt(discriminator), avatar)
+                        getDiscordImage({
+                          id,
+                          hash: avatar,
+                          discriminator: parseInt(discriminator),
+                        })
                     ))
                 ) :
                 banner_color,
-              nitroType: premium_type === 0 ? 'NONE' : premium_type === 1 ? 'CLASSIC' : 'PREMIUM',
+              nitroType:
+              userData.premium_type === 0 ?
+                'NONE' :
+                userData.premium_type === 1 ?
+                'CLASSIC' :
+                'PREMIUM',
             },
           });
           await prisma.user.update({
