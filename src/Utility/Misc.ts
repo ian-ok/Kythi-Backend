@@ -1,11 +1,23 @@
 import {discordCdnUrl} from './Constants';
 
-export function getAvatarURL(id: string, discriminator: number, hash: string) {
-  if (!hash) {
+interface ImageOptions {
+  id: string;
+  hash: string;
+  isBanner?: boolean;
+  discriminator?: number;
+}
+
+export function getDiscordImage({
+  id,
+  hash,
+  isBanner = false,
+  discriminator,
+}: ImageOptions) {
+  if (!hash && discriminator && !isBanner) {
     return `${discordCdnUrl}/embed/avatars/${discriminator % 5}.png`;
   }
 
-  return `${discordCdnUrl}/avatars/${id}/${hash}.${
+  return `${discordCdnUrl}/${isBanner ? 'banners' : 'avatars'}/${id}/${hash}.${
     hash.startsWith('a_') ? 'gif' : 'png'
   }`;
 }
