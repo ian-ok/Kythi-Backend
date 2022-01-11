@@ -107,11 +107,11 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
                 hash: avatar,
                 discriminator: parseInt(discriminator),
               }),
-              banner: getDiscordImage({
+              banner: banner ? getDiscordImage({
                 id,
                 hash: banner,
                 isBanner: true,
-              }),
+              }) : null,
               bannerColor:
               !banner && !banner_color ?
                 rgbToHex(
