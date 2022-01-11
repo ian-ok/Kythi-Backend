@@ -1,6 +1,6 @@
 import fastifyMulter from 'fastify-multer';
 import type {FastifyInstance} from 'fastify';
-import {s3Info, uploadFile} from '../Utility/Storage';
+import {uploadFile} from '../Utility/Storage';
 import {verifyUser, verifyFile} from '../Middlewares/UploadMiddlewares';
 import {generateRandomString} from '../Utility/Misc';
 import {File} from 'fastify-multer/lib/interfaces';
