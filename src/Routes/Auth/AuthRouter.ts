@@ -135,7 +135,7 @@ export default async function AuthRouter(fastify: FastifyInstance) {
             .send({statusCode: 400, message: 'Invalid username or password.'});
       }
 
-      request.user = user as User;
+      request.logIn(user);
     }),
   }, async (request, reply) => {
     const user = request.user as User;
