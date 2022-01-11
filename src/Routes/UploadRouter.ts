@@ -60,7 +60,7 @@ export default async function UploadRouter(fastify: FastifyInstance) {
         uploadFile(file, reqFile.buffer);
 
         reply.send({
-          imageURL: `https://${s3Info.endpoint}/${process.env.S3_BUCKET}/${user.id}/${file.cdnName}`,
+          imageURL: `https://${file.domain}${file.path}${file.fileName}`,
         });
       }
   );
