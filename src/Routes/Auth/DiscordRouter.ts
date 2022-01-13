@@ -82,7 +82,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
             where: {discordId: userData.id},
           });
 
-          if (!kythiUser) {
+          if (!kythiUser || !kythiUser.verifiedAt) {
             return reply.redirect(`${process.env.FRONTEND_URL}`);
           }
 

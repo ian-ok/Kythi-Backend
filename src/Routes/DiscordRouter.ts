@@ -17,7 +17,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
   const {prisma} = fastify;
 
   fastify.get('/link', async (request, reply) => {
-    if (!request.user || request.user.discordId) {
+    if (!request.user || !request.user.verifiedAt || request.user.discordId) {
       return reply.redirect(process.env.FRONTEND_URL);
     }
 
