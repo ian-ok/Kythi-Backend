@@ -24,7 +24,7 @@ export default async function AuthRouter(fastify: FastifyInstance) {
                 .required()
                 .min(4)
                 .max(24)
-                .pattern(/^[a-zA-Z0-9_]+$/),
+                .pattern(/^\w+$/),
             password: Joi.string().min(4).max(60).required(),
             email: Joi.string().required().email().lowercase(),
             inviteCode: Joi.string().required(),
