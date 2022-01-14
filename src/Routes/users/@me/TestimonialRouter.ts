@@ -20,6 +20,29 @@ interface TesimonialCreate {
 export default async function TestimonialRouter(fastify: FastifyInstance) {
   const {prisma} = fastify;
 
+  fastify.get('/', async (request, reply) => {
+    const {user} = request;
+
+    if (!user) {
+      return reply.code(401).send({
+        statusCode: 401,
+        message: 'You must be logged in to create a testimonial.',
+      });
+    }
+
+    const testimony = await prisma.testimonial.findFirst({
+      where: {authorId: user.id},
+    });
+
+    if (!testimony) return reply.code(400).send({statusCode: 400, message: 'No Testimony Found'});
+
+    return {
+      statusCode: 200,
+      message: 'Successfully retrieved testimony',
+      testimony,
+    };
+  });
+
   fastify.post<{ Body: TesimonialCreate }>(
       '/',
       {
