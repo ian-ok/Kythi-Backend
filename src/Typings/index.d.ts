@@ -35,6 +35,10 @@ declare global {
     verificationCode: string | null;
     discordId: string | null;
     discord?: Discord;
+    uploadKey: string;
+    upload: UploadSettings;
+    uploads?: DbFile[]
+    testimonial?: Testimonial;
   }
 
   interface Invite {
@@ -57,6 +61,12 @@ declare global {
     user?: User;
   }
 
+  interface UploadSettings {
+    key: string;
+    count: number;
+    user?: User;
+  }
+
   interface DbFile {
     fileName: string;
     cdnName: string;
@@ -67,6 +77,15 @@ declare global {
     uploadedAt: Date;
     uploaderId: string;
     uploader?: User;
+  }
+
+  interface Testimonial {
+    id: string
+    content: string
+    verified: boolean
+    messageId: string
+    authorId: string
+    author?: User;
   }
 }
 
