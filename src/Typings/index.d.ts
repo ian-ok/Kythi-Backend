@@ -35,8 +35,8 @@ declare global {
     verificationCode: string | null;
     discordId: string | null;
     discord?: Discord;
-    uploadKey: string;
-    upload: UploadSettings;
+    uploadKey: string | null;
+    upload?: UploadSettings;
     uploads?: DbFile[]
     testimonial?: Testimonial;
   }
