@@ -13,6 +13,8 @@ declare global {
       SESSION_KEY: string;
       FRONTEND_URL: string;
       DATABASE_URL: string;
+      TESTIMONY_CHANNEL: string;
+      DISCORD_BOT_TOKEN: string;
       DISCORD_CLIENT_ID: string;
       DISCORD_OAUTH_SCOPES: string;
       DISCORD_CLIENT_SECRET: string;

@@ -24,6 +24,7 @@ model User {
   uploadKey        String?         @unique
   upload           UploadSettings? @relation(fields: [uploadKey], references: [key])
   uploads          File[]
+  testimonial      Testimonial?
 }
 
 model UploadSettings {
@@ -50,6 +51,15 @@ enum nitroType {
   PREMIUM
 }
 
+model Testimonial {
+  id        String  @id @unique @default(cuid())
+  content   String
+  verified  Boolean @default(false)
+  messageId String?  @unique
+  authorId  String  @unique
+  author    User    @relation(fields: [authorId], references: [id])
+}
+
 model Invite {
   code      String   @id @unique @default(uuid())
   createdBy String
@@ -58,13 +68,13 @@ model Invite {
 }
 
 model File {
-  fileName String 
-  cdnName String @id @unique
-  mimeType String
-  size Int
-  path String
-  domain String
+  fileName   String
+  cdnName    String   @id @unique
+  mimeType   String
+  size       Int
+  path       String
+  domain     String
   uploadedAt DateTime @default(now())
   uploaderId String
-  uploader User  @relation(fields: [uploaderId], references: [id])
+  uploader   User     @relation(fields: [uploaderId], references: [id])
 }
