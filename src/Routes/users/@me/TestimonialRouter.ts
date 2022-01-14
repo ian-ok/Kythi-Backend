@@ -26,7 +26,7 @@ export default async function TestimonialRouter(fastify: FastifyInstance) {
     if (!user) {
       return reply.code(401).send({
         statusCode: 401,
-        message: 'You must be logged in to create a testimonial.',
+        message: 'You must be logged in to view your testimonial',
       });
     }
 
