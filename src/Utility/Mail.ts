@@ -1,5 +1,6 @@
 import {join} from 'path';
 import {compile} from 'handlebars';
+import {User} from '@prisma/client';
 import {readFile} from 'fs/promises';
 import {createTransport} from 'nodemailer';
 

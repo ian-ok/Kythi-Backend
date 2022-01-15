@@ -139,9 +139,7 @@ export default async function AuthRouter(fastify: FastifyInstance) {
       request.logIn(user);
     }), emailVerified],
   }, async (request) => {
-    const user = request.user as User;
-
-    return {statusCode: 200, message: 'Successfully logged in', user};
+    return {statusCode: 200, message: 'Successfully logged in', user: request.user};
   });
 }
 

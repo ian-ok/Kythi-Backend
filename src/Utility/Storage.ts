@@ -1,4 +1,5 @@
 import {S3} from 'aws-sdk';
+import {File} from '@prisma/client';
 
 export const s3Info = JSON.parse(process.env.S3_INFO);
 export const s3 = new S3({
@@ -7,7 +8,7 @@ export const s3 = new S3({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function uploadFile(file: DbFile, buffer: Buffer): Promise<any> {
+export async function uploadFile(file: File, buffer: Buffer): Promise<any> {
   return new Promise((resolve, reject) => {
     s3.putObject({
       Bucket: process.env.S3_BUCKET,

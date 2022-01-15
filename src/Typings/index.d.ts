@@ -1,6 +1,6 @@
 import type { ValidationResult } from "joi";
-import { PrismaClient } from "@prisma/client";
 import { File } from "fastify-multer/lib/interfaces";
+import { PrismaClient, User, Invite, Discord, UploadSettings } from "@prisma/client";
 
 declare global {
   namespace NodeJS {
@@ -21,71 +21,10 @@ declare global {
     }
   }
 
-  interface User {
-    id: string;
-    uid: Number;
-    username: string;
-    email: string;
-    password: string;
-    createdAt: Date;
-    invited: string[];
-    invitedBy: string;
-    invites?: Invite[];
-    verifiedAt: Date | null;
-    verificationCode: string | null;
-    discordId: string | null;
-    discord?: Discord;
-    uploadKey: string | null;
-    upload?: UploadSettings;
-    uploads?: DbFile[]
-    testimonial?: Testimonial;
-  }
-
-  interface Invite {
-    code: string;
-    createdBy: string;
-    createdAt: Date;
-    user?: User;
-  }
-
-  interface Discord {
-    id: string;
-    username: string;
-    discriminator: string;
-    tag: string;
-    avatar: string;
-    banner?: string;
-    bannerColor?: string;
-    createdAt: Date;
-    nitroType: "NONE" | "CLASSIC" | "PREMIUM";
-    user?: User;
-  }
-
-  interface UploadSettings {
-    key: string;
-    count: number;
-    user?: User;
-  }
-
-  interface DbFile {
-    fileName: string;
-    cdnName: string;
-    mimeType: string;
-    size: number;
-    path: string;
-    domain: string;
-    uploadedAt: Date;
-    uploaderId: string;
-    uploader?: User;
-  }
-
-  interface Testimonial {
-    id: string
-    content: string
-    verified: boolean
-    messageId: string
-    authorId: string
-    author?: User;
+  interface PassportUser extends User {
+    invites: Invite[];
+    discord: Discord;
+    upload: UploadSettings;
   }
 }
 
@@ -94,7 +33,11 @@ declare module "fastify" {
     prisma: PrismaClient;
   }
 
-  interface PassportUser extends User {}
+  interface PassportUser extends User {
+    invites: Invite[];
+    discord: Discord;
+    upload: UploadSettings;
+  }
 
   interface FastifySchema extends FastifySchema {
     validate?: (...any) => ValidationResult<any>;

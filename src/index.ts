@@ -5,10 +5,10 @@ import {verify} from 'argon2';
 import fastifyCors from 'fastify-cors';
 import {Strategy} from 'passport-local';
 import fastifyHelmet from 'fastify-helmet';
-import {PrismaClient} from '@prisma/client';
 import fastifyMulter from 'fastify-multer';
 import fastifyAutoload from 'fastify-autoload';
 import fastifyPassport from 'fastify-passport';
+import {PrismaClient, User} from '@prisma/client';
 import fastifyRateLimit from 'fastify-rate-limit';
 import fastifySecureSession from 'fastify-secure-session';
 
@@ -58,7 +58,7 @@ fastifyPassport.use(new Strategy(async (username, password, done) => {
         },
       ],
     },
-    include: {discord: true, upload: true},
+    include: {discord: true, upload: true, invites: true},
   });
 
   if (!user || (await verify(user.password, password)) === false) {
@@ -72,7 +72,7 @@ fastifyPassport.registerUserDeserializer(
     async (id: string) =>
       await server.prisma.user.findFirst({
         where: {id},
-        include: {discord: true, upload: true},
+        include: {discord: true, upload: true, invites: true},
       })
 );
 

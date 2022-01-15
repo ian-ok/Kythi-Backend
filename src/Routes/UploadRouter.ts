@@ -31,7 +31,7 @@ export default async function UploadRouter(fastify: FastifyInstance) {
           headers: {authorization},
         } = request as {
             file: verifiedFile;
-            user: User;
+            user: PassportUser;
             headers: { authorization: string };
         };
 
