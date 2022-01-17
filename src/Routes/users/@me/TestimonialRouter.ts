@@ -1,5 +1,4 @@
 import Joi from 'joi';
-import {AxiosError} from 'axios';
 import type {FastifyInstance} from 'fastify';
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime';
 import {
@@ -131,7 +130,7 @@ export default async function TestimonialRouter(fastify: FastifyInstance) {
             message: 'Testimonial created. Sent for approval.',
           });
         } catch (err) {
-          return reply.send({
+          return reply.code(500).send({
             statusCode: 500,
             message:
             'An error occurred while sending the testimonial to the server.',
@@ -163,12 +162,12 @@ export default async function TestimonialRouter(fastify: FastifyInstance) {
     });
 
     if (!oldTestimonial) {
-      return reply.send({
+      return reply.code(400).send({
         statusCode: 400,
         message: 'You do not have a testimonial.',
       });
     } else if (oldTestimonial.content == content) {
-      return reply.send({
+      return reply.code(400).send({
         statusCode: 400,
         message: 'The testimonial has no content change.',
       });
@@ -249,7 +248,7 @@ export default async function TestimonialRouter(fastify: FastifyInstance) {
         message: 'Testimonial updated. Sent for approval.',
       });
     } catch (err) {
-      return reply.send({
+      return reply.code(500).send({
         statusCode: 500,
         message:
         'An error occurred while modifiying your testimonial on the server.',
@@ -297,9 +296,9 @@ export default async function TestimonialRouter(fastify: FastifyInstance) {
                     })),
                   })),
                 }
-            );
+            ).catch(() => null);
           } else if (oldMessage && testimony.messageId) {
-            await deleteDiscordMessage(process.env.TESTIMONY_CHANNEL, testimony.messageId, 'Testimonial Deleted');
+            await deleteDiscordMessage(process.env.TESTIMONY_CHANNEL, testimony.messageId, 'Testimonial Deleted').catch(() => null);
           }
 
           return reply.send({
@@ -307,19 +306,14 @@ export default async function TestimonialRouter(fastify: FastifyInstance) {
             message: 'Testimonial deleted.',
           });
         } catch (err) {
-          if ((err as AxiosError).response) {
-            return reply.send({
-              statusCode: 200,
-              message: 'Testimonial deleted.',
-            });
-          } else if ((err as PrismaClientKnownRequestError).code === 'P2025') {
-            return reply.send({
+          if ((err as PrismaClientKnownRequestError).code === 'P2025') {
+            return reply.code(400).send({
               statusCode: 400,
               message: 'You do not have a testimonial.',
             });
           }
 
-          return reply.send({
+          return reply.code(500).send({
             statusCode: 500,
             message:
             'An error occurred while deleting your testimonial from the server.',
