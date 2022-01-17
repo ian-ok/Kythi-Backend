@@ -14,6 +14,18 @@ export async function emailVerified(
   }
 }
 
+export async function isAuthorized(
+    request: FastifyRequest,
+    reply: FastifyReply
+) {
+  if (request.headers.authorization !== process.env.API_KEY) {
+    return reply.status(401).send({
+      statusCode: 401,
+      message: 'Unauthorized.',
+    });
+  }
+}
+
 export async function discordLinked(
     request: FastifyRequest,
     reply: FastifyReply
