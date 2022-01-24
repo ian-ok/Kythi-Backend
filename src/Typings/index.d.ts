@@ -1,6 +1,6 @@
 import type { ValidationResult } from "joi";
 import { File } from "fastify-multer/lib/interfaces";
-import { PrismaClient, User, Invite, Discord, UploadSettings } from "@prisma/client";
+import { PrismaClient, User, Invite, Discord, UploadSettings, UserEmbed } from "@prisma/client";
 
 declare global {
   namespace NodeJS {
@@ -26,6 +26,7 @@ declare global {
     invites: Invite[];
     discord: Discord;
     upload: UploadSettings;
+    embeds: UserEmbed[];
   }
 }
 
@@ -38,6 +39,7 @@ declare module "fastify" {
     invites: Invite[];
     discord: Discord;
     upload: UploadSettings;
+    embeds: UserEmbed[];
   }
 
   interface FastifySchema extends FastifySchema {

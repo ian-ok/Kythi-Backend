@@ -25,6 +25,7 @@ model User {
   upload           UploadSettings? @relation(fields: [uploadKey], references: [key])
   uploads          File[]
   testimonial      Testimonial?
+  embeds           UserEmbed[]
 }
 
 model UploadSettings {
@@ -55,7 +56,7 @@ model Testimonial {
   id        String  @id @unique @default(cuid())
   content   String
   verified  Boolean @default(false)
-  messageId String?  @unique
+  messageId String? @unique
   authorId  String  @unique
   author    User    @relation(fields: [authorId], references: [id])
 }
@@ -67,14 +68,43 @@ model Invite {
   user      User     @relation(fields: [createdBy], references: [id])
 }
 
+model UserEmbed {
+  id          String  @id @unique @default(cuid())
+  enabled     Boolean @default(true)
+  title       String? @default(":filename:")
+  description String? @default("Kythi.com | :uploadcount:")
+  color       String? @default("RANDOM")
+  authorText  String? @default(":username:")
+  authorUrl   String?
+  siteText    String? @default(":date: | :filesize:")
+  siteUrl     String?
+  userId      String
+  user        User    @relation(fields: [userId], references: [id])
+}
+
+model FileEmbed {
+  id          String  @id @unique @default(cuid())
+  enabled     Boolean @default(true)
+  title       String?
+  description String?
+  color       String?
+  authorText  String?
+  authorUrl   String?
+  siteText    String?
+  siteUrl     String?
+  fileId      String  @unique
+  file        File?   @relation(fields: [fileId], references: [cdnName])
+}
+
 model File {
+  cdnName    String     @id @unique
   fileName   String
-  cdnName    String   @id @unique
   mimeType   String
   size       Int
   path       String
   domain     String
-  uploadedAt DateTime @default(now())
+  uploadedAt DateTime   @default(now())
   uploaderId String
-  uploader   User     @relation(fields: [uploaderId], references: [id])
+  uploader   User       @relation(fields: [uploaderId], references: [id])
+  embed      FileEmbed?
 }

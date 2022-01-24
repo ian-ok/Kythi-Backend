@@ -77,15 +77,18 @@ export default async function AuthRouter(fastify: FastifyInstance) {
           };
         }
 
-        const uploadSettings = await prisma.uploadSettings.create({data: {}});
-
         const newUser = await prisma.user.create({
           data: {
             username,
             email,
             password: await hash(password),
             invitedBy: inviteUsed.createdBy,
-            uploadKey: uploadSettings.key,
+            upload: {
+              create: {},
+            },
+            embeds: {
+              create: [{}],
+            },
           },
         });
 

@@ -1,6 +1,7 @@
 import fastifyMulter from 'fastify-multer';
 import type {FastifyInstance} from 'fastify';
 import {uploadFile} from '../Utility/Storage';
+import {formatEmbed} from '../Utility/Embeds';
 import {File} from 'fastify-multer/lib/interfaces';
 import {generateRandomString} from '../Utility/Misc';
 import {verifyUser, verifyFile} from '../Middlewares/UploadMiddlewares';
@@ -38,18 +39,36 @@ export default async function UploadRouter(fastify: FastifyInstance) {
         const fileName =
         generateRandomString(10) + '.' + reqFile.mimetype.split('/')[1];
 
+        const fileData = {
+          fileName,
+          cdnName: fileName,
+          mimeType: reqFile.mimetype,
+          size: reqFile.size,
+          path: '/',
+          domain:
+          reqFile.mimetype.split('/')[0] === 'image' ?
+            'kythi.pics' :
+            'kythi.media',
+          uploadedAt: new Date(),
+          uploaderId: user.id,
+        };
+
         const file = await prisma.file.create({
           data: {
-            fileName,
-            cdnName: fileName,
-            mimeType: reqFile.mimetype,
-            size: reqFile.size,
-            path: '/',
-            domain:
-            reqFile.mimetype.split('/')[0] === 'image' ?
-              'kythi.pics' :
-              'kythi.media',
-            uploaderId: user.id,
+            ...fileData,
+            embed: {
+              create: {
+                ...formatEmbed(
+                    user.embeds.map((e: { id?: string; userId?: string }) => {
+                      delete e.id;
+                      delete e.userId;
+                      return e;
+                    })[Math.floor(Math.random() * user.embeds.length)],
+                    fileData,
+                    user
+                ),
+              },
+            },
           },
         });
 
