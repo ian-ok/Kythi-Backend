@@ -2,12 +2,30 @@ import {req} from './Requests';
 import {APIMessage} from 'discord-api-types';
 import {discordApiUrl, discordCdnUrl} from './Constants';
 
-
 interface ImageOptions {
   id: string;
   hash: string;
   isBanner?: boolean;
   discriminator?: number;
+}
+
+export function applyUserRoles(userId: string) {
+  return new Promise((resolve, reject) => {
+    Promise.all(
+        JSON.parse(process.env.DISCORD_LINKED_ROLES).map((roleId: string) =>
+          req(
+              `${discordApiUrl}/guilds/${process.env.DISCORD_GUILD_ID}/members/${userId}/roles/${roleId}`,
+              'PUT',
+              {
+                headers: {
+                  'Authorization': `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+                  'X-Audit-Log-Reason': 'Account was linked.',
+                },
+              }
+          )
+        )
+    ).then(resolve).catch(reject);
+  });
 }
 
 export function getDiscordMessage(
@@ -19,7 +37,9 @@ export function getDiscordMessage(
       headers: {
         Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
       },
-    }).then(resolve).catch(reject);
+    })
+        .then(resolve)
+        .catch(reject);
   });
 }
 
@@ -34,7 +54,9 @@ export async function sendDiscordMessage(
       headers: {
         Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
       },
-    }).then(resolve).catch(reject);
+    })
+        .then(resolve)
+        .catch(reject);
   });
 }
 
@@ -45,12 +67,18 @@ export async function editDiscordMessage(
     edited: any
 ): Promise<APIMessage> {
   return new Promise((resolve, reject) => {
-    req(`${discordApiUrl}/channels/${channelId}/messages/${messageId}`, 'PATCH', {
-      body: edited,
-      headers: {
-        Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
-      },
-    }).then(resolve).catch(reject);
+    req(
+        `${discordApiUrl}/channels/${channelId}/messages/${messageId}`,
+        'PATCH',
+        {
+          body: edited,
+          headers: {
+            Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+          },
+        }
+    )
+        .then(resolve)
+        .catch(reject);
   });
 }
 
@@ -60,12 +88,18 @@ export function deleteDiscordMessage(
     reason?: string
 ): Promise<APIMessage> {
   return new Promise((resolve, reject) => {
-    req(`${discordApiUrl}/channels/${channelId}/messages/${messageId}`, 'DELETE', {
-      headers: {
-        'Authorization': `Bot ${process.env.DISCORD_BOT_TOKEN}`,
-        'X-Audit-Log-Reason': reason ? reason : 'No reason provided',
-      },
-    }).then(resolve).catch(reject);
+    req(
+        `${discordApiUrl}/channels/${channelId}/messages/${messageId}`,
+        'DELETE',
+        {
+          headers: {
+            'Authorization': `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+            'X-Audit-Log-Reason': reason ? reason : 'No reason provided',
+          },
+        }
+    )
+        .then(resolve)
+        .catch(reject);
   });
 }
 

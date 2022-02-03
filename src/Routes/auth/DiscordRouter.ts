@@ -3,8 +3,8 @@ import {getColor} from 'colorthief';
 import {randomBytes} from 'node:crypto';
 import type {FastifyInstance} from 'fastify';
 import {OAuthURLS} from '../../Utility/Constants';
-import {getDiscordImage, rgbToHex} from '../../Utility/Misc';
 import {req, encodeURL, paramBuilder} from '../../Utility/Requests';
+import {getDiscordImage, rgbToHex, applyUserRoles} from '../../Utility/Misc';
 
 const states = new Set<string>();
 interface loginCallbackQuery {
@@ -134,6 +134,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
           });
           /* eslint-enable camelcase */
 
+          await applyUserRoles(id).catch(() => null);
           await request.logIn(
               await prisma.user.findFirst({where: {id: kythiUser.id}})
           );

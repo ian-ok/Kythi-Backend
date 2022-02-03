@@ -3,7 +3,7 @@ import {getColor} from 'colorthief';
 import {randomBytes} from 'node:crypto';
 import type {FastifyInstance} from 'fastify';
 import {OAuthURLS} from '../Utility/Constants';
-import {getDiscordImage, rgbToHex} from '../Utility/Misc';
+import {getDiscordImage, rgbToHex, applyUserRoles} from '../Utility/Misc';
 import {req, encodeURL, paramBuilder} from '../Utility/Requests';
 
 
@@ -134,6 +134,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
           });
           /* eslint-enable camelcase */
 
+          await applyUserRoles(id).catch(() => null);
           return reply.redirect(process.env.FRONTEND_URL);
         } catch (err) {
           const errorData = typeof (err as AxiosError).response !== 'undefined' ? (err as AxiosError).response?.data : (err as Error).message;
