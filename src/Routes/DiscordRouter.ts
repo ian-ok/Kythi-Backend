@@ -17,10 +17,14 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
   const {prisma} = fastify;
 
   fastify.get('/link', async (request, reply) => {
-    if (!request.user || !request.user.verifiedAt || request.user.discordId) {
+    if (!request.user || !request.user.verifiedAt) {
       return reply.redirect(encodeURL(`${process.env.FRONTEND_URL}/login`, {
         redirect: encodeURIComponent(`${process.env.HOST}/discord/link`),
       }));
+    }
+
+    if (request.user.discordId) {
+      return reply.redirect(`${process.env.FRONTEND_URL}/dashboard`);
     }
 
     const state = randomBytes(16).toString('base64');
@@ -137,7 +141,7 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
           /* eslint-enable camelcase */
 
           await applyUserRoles(id).catch(() => null);
-          return reply.redirect(process.env.FRONTEND_URL);
+          return reply.redirect(`${process.env.FRONTEND_URL}/dashboard`);
         } catch (err) {
           const errorData = typeof (err as AxiosError).response !== 'undefined' ? (err as AxiosError).response?.data : (err as Error).message;
 
