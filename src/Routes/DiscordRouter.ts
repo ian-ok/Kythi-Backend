@@ -18,7 +18,9 @@ export default async function DiscordRouter(fastify: FastifyInstance) {
 
   fastify.get('/link', async (request, reply) => {
     if (!request.user || !request.user.verifiedAt || request.user.discordId) {
-      return reply.redirect(process.env.FRONTEND_URL);
+      return reply.redirect(encodeURL(`${process.env.FRONTEND_URL}/login`, {
+        redirect: encodeURIComponent(`${process.env.HOST}/discord/link`),
+      }));
     }
 
     const state = randomBytes(16).toString('base64');
