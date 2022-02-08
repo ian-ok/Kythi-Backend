@@ -14,7 +14,7 @@ export async function verifyUser(request: FastifyRequest, reply: FastifyReply) {
 
   const user = await prisma.user.findFirst({
     where: {uploadKey: authorization},
-    include: {discord: true, upload: true, invites: true, embeds: true},
+    include: {embeds: true},
   }) as PassportUser;
 
   if (!user) {

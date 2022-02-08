@@ -58,7 +58,6 @@ fastifyPassport.use(new Strategy(async (username, password, done) => {
         },
       ],
     },
-    include: {discord: true, upload: true, invites: true, embeds: true},
   });
 
   if (!user || (await verify(user.password, password)) === false) {
@@ -72,7 +71,13 @@ fastifyPassport.registerUserDeserializer(
     async (id: string) =>
       await server.prisma.user.findFirst({
         where: {id},
-        include: {discord: true, upload: true, invites: true, embeds: true},
+        include: {
+          discord: true,
+          upload: true,
+          invites: true,
+          embeds: true,
+          testimonial: true,
+        },
       })
 );
 
