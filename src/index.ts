@@ -58,6 +58,13 @@ fastifyPassport.use(new Strategy(async (username, password, done) => {
         },
       ],
     },
+    include: {
+      discord: true,
+      upload: true,
+      invites: true,
+      embeds: true,
+      testimonial: true,
+    },
   });
 
   if (!user || (await verify(user.password, password)) === false) {
