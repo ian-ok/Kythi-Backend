@@ -14,7 +14,7 @@ export async function verifyUser(request: FastifyRequest, reply: FastifyReply) {
 
   const user = await prisma.user.findFirst({
     where: {uploadKey: authorization},
-    include: {embeds: true},
+    include: {embeds: true, upload: true},
   }) as PassportUser;
 
   if (!user) {
