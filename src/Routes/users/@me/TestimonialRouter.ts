@@ -28,17 +28,9 @@ export default async function TestimonialRouter(fastify: FastifyInstance) {
       },
       async (request, reply) => {
         const {
-          // user,
+          user,
           body: {content},
         } = request;
-
-        const user = await prisma.user.findFirst({
-          where: {uid: 1},
-          include: {
-            discord: true,
-            testimonial: true,
-          },
-        });
 
         if (!user) {
           return reply.code(401).send({
