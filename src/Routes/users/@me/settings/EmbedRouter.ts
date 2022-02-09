@@ -19,6 +19,30 @@ interface EditEmbedBody {
 export default async function EmbedRouter(fastify: FastifyInstance) {
   const {prisma} = fastify;
 
+  fastify.post('/', async (request, reply) => {
+    const {user} = request;
+
+    if (!user) {
+      return reply.code(401).send({
+        statusCode: 401,
+        message: 'You must be logged in to modify your embed settings.',
+      });
+    }
+
+    if (user.embeds.length >= 10) {
+      return reply.code(400).send({
+        statusCode: 400,
+        message: 'You cannot have more than 10 embeds.',
+      });
+    }
+
+    const embed = await prisma.userEmbed.create({data: {
+      userId: user.id,
+    }});
+
+    return {statusCode: 200, message: 'Successfully created embed profile', embed};
+  });
+
   fastify.patch<{ Params: EditEmbedParams; Body: EditEmbedBody }>(
       '/:id',
       {
@@ -46,9 +70,7 @@ export default async function EmbedRouter(fastify: FastifyInstance) {
           });
         }
 
-        const embed = await prisma.userEmbed.findFirst({where: {id}});
-
-        if (!embed || embed.userId !== user.id) {
+        if (!user.embeds.some(((embed) => embed.id === id))) {
           return reply.code(400).send({
             statusCode: 400,
             message: 'You do not have permission to modify this embed.',
@@ -66,6 +88,40 @@ export default async function EmbedRouter(fastify: FastifyInstance) {
         });
       }
   );
+
+  fastify.delete<{ Params: EditEmbedParams; }>('/:id', async (request, reply) => {
+    const {user} = request;
+    const {id} = request.params;
+
+    if (!user) {
+      return reply.code(401).send({
+        statusCode: 401,
+        message: 'You must be logged in to modify your embed settings.',
+      });
+    }
+
+    if (!user.embeds.some(((embed) => embed.id === id))) {
+      return reply.code(400).send({
+        statusCode: 400,
+        message: 'You do not have permission to modify this embed.',
+      });
+    }
+
+    if (user.embeds.length === 1) {
+      return reply.code(400).send({
+        statusCode: 400,
+        message: 'You must have at least one embed profile.',
+      });
+    }
+
+    const deletedEmbed = await prisma.userEmbed.delete({where: {id}});
+
+    return reply.send({
+      statusCode: 200,
+      message: 'Successfully deleted embed profile.',
+      embed: deletedEmbed,
+    });
+  });
 }
 
 export const autoPrefix = '/users/@me/settings/embeds';
