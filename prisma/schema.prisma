@@ -53,12 +53,18 @@ enum nitroType {
 }
 
 model Testimonial {
-  id        String  @id @unique @default(cuid())
+  id        String            @id @unique @default(cuid())
   content   String
-  verified  Boolean @default(false)
-  messageId String? @unique
-  authorId  String  @unique
-  author    User    @relation(fields: [authorId], references: [id])
+  status    TestimonialStatus @default(PENDING)
+  messageId String?           @unique
+  authorId  String            @unique
+  author    User              @relation(fields: [authorId], references: [id])
+}
+
+enum TestimonialStatus {
+  PENDING
+  DENIED
+  ACCEPTED
 }
 
 model Invite {

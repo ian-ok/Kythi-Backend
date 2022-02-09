@@ -4,7 +4,6 @@ import type {FastifyInstance} from 'fastify';
 import {verifyMail} from '../../Utility/Mail';
 import fastifyPassport from 'fastify-passport';
 import {allowedEmails} from '../../Utility/Constants';
-import {emailVerified} from '../../Middlewares/MiscMiddlewares';
 
 interface registerBody {
   username: string;
@@ -16,16 +15,12 @@ interface registerBody {
 export default async function AuthRouter(fastify: FastifyInstance) {
   const {prisma} = fastify;
 
-  fastify.post<{Body: registerBody}>(
+  fastify.post<{ Body: registerBody }>(
       '/register',
       {
         schema: {
           body: Joi.object().keys({
-            username: Joi.string()
-                .required()
-                .min(4)
-                .max(24)
-                .pattern(/^\w+$/),
+            username: Joi.string().required().min(4).max(24).pattern(/^\w+$/),
             password: Joi.string().min(4).max(60).required(),
             email: Joi.string().required().email().lowercase(),
             inviteCode: Joi.string().required(),
@@ -106,44 +101,82 @@ export default async function AuthRouter(fastify: FastifyInstance) {
         });
         verifyMail(newUser);
 
-        reply.code(200).send({statusCode: 200, message: 'Successfully registered! Check your email for verification.'});
+        reply
+            .code(200)
+            .send({
+              statusCode: 200,
+              message:
+            'Successfully registered! Check your email for verification.',
+            });
       }
   );
 
   fastify.get('/session', async (request, reply) => {
     if (!request.user) {
-      reply.code(400).send({statusCode: 400, message: 'No session found.', user: null});
+      reply
+          .code(400)
+          .send({statusCode: 400, message: 'No session found.', user: null});
     }
 
     return {statusCode: 200, message: 'Session located.', user: request.user};
   });
 
   fastify.post('/logOut', async (request, reply) => {
-    if (!request.user) return reply.code(400).send({statusCode: 400, message: 'No session found.'});
+    if (!request.user) {
+      return reply
+          .code(400)
+          .send({statusCode: 400, message: 'No session found.'});
+    }
 
     request.logOut();
-    reply.code(200).send({statusCode: 200, message: 'Successfully logged out.'});
+    reply
+        .code(200)
+        .send({statusCode: 200, message: 'Successfully logged out.'});
   });
 
-  fastify.post('/login', {
-    schema: {
-      body: Joi.object().keys({
-        username: Joi.string().required(),
-        password: Joi.string().required(),
-      }),
-    },
-    preHandler: [fastifyPassport.authenticate('local', async function(request, reply, _, user) {
-      if (!user) {
-        return reply
-            .code(400)
-            .send({statusCode: 400, message: 'Invalid username or password.'});
+  fastify.post(
+      '/login',
+      {
+        schema: {
+          body: Joi.object().keys({
+            username: Joi.string().required(),
+            password: Joi.string().required(),
+          }),
+        },
+        preHandler: [
+          fastifyPassport.authenticate(
+              'local',
+              async function(request, reply, _, user) {
+                if (!user) {
+                  return reply
+                      .code(400)
+                      .send({
+                        statusCode: 400,
+                        message: 'Invalid username or password.',
+                      });
+                }
+
+                request.logIn(user);
+              }
+          ),
+        ],
+      },
+      async (request) => {
+        if (!request.user?.verifiedAt) {
+          await request.logOut();
+          return {
+            statusCode: 400,
+            message: 'Your email is not verified.',
+          };
+        }
+
+        return {
+          statusCode: 200,
+          message: 'Successfully logged in',
+          user: request.user,
+        };
       }
-
-      request.logIn(user);
-    }), emailVerified],
-  }, async (request) => {
-    return {statusCode: 200, message: 'Successfully logged in', user: request.user};
-  });
+  );
 }
 
 export const autoPrefix = '/auth';

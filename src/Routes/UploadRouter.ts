@@ -5,7 +5,6 @@ import {formatEmbed} from '../Utility/Embeds';
 import {File} from 'fastify-multer/lib/interfaces';
 import {generateRandomString} from '../Utility/Misc';
 import {verifyUser, verifyFile} from '../Middlewares/UploadMiddlewares';
-import {discordLinked, emailVerified} from '../Middlewares/MiscMiddlewares';
 
 const multer = fastifyMulter({
   storage: fastifyMulter.memoryStorage(),
@@ -24,7 +23,7 @@ export default async function UploadRouter(fastify: FastifyInstance) {
 
   fastify.post(
       '/sharex',
-      {preHandler: [verifyUser, emailVerified, discordLinked, multer.single('file'), verifyFile]},
+      {preHandler: [verifyUser, multer.single('file'), verifyFile]},
       async (request, reply) => {
         const {
           file: reqFile,
