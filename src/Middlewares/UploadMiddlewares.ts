@@ -37,9 +37,9 @@ export async function verifyFile(request: FastifyRequest, reply: FastifyReply) {
   if (!request.file.mimetype || !request.file.size || !request.file.buffer) {
     return reply.status(401).send({statusCode: 401, message: 'Invalid File'});
   }
-  
+
   if (!request.file.mimetype.match(/image\/.+/i)) {
-   return reply.status(401).send({statusCode: 401, message: 'Invalid File Type'});
+    return reply.status(401).send({statusCode: 401, message: 'Invalid File Type'});
   }
 
   return;
