@@ -7,7 +7,7 @@ import {createTransport} from 'nodemailer';
 const mailInfo = JSON.parse(process.env.MAIL_INFO);
 const transporter = createTransport(mailInfo);
 
-export async function verifyMail(user: User) {
+export async function verifyMail(user: User): Promise<void> {
   const html = await readFile(join(__dirname, 'Templates', 'Verification.html'), 'utf8');
   const compiledHtml = compile(html)({
     username: user.username,
@@ -16,7 +16,7 @@ export async function verifyMail(user: User) {
     verificationCode: user.verificationCode,
   });
 
-  transporter.sendMail({
+  await transporter.sendMail({
     from: mailInfo.auth.user,
     to: user.email,
     subject: 'Verify your email',
